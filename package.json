@@ -6,21 +6,19 @@
   "author": "Alec Brunelle <alec@alec.coffee>",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js",
+    "start": "FIREBASE_STORAGE_BUCKET=fake-bucket-name node build/index.js",
     "build": "tsc"
   },
   "dependencies": {
     "@admin-bro/express": "^3.1.0",
-    "@admin-bro/typeorm": "^1.4.0",
+    "@google-cloud/storage": "^5.7.2",
+    "@tirrilee/admin-bro-firebase": "^1.0.41",
     "admin-bro": "^3.3.1",
-    "class-validator": "^0.13.0",
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.1",
-    "pg": "^8.5.1",
-    "reflect-metadata": "^0.1.13",
-    "source-map": "^0.7.3",
-    "typeorm": "^0.2.30"
+    "firebase": "^8.2.3",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",

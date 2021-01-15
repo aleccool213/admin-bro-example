@@ -1,50 +1,31 @@
 import "reflect-metadata";
-
-import {
-  BaseEntity,
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  createConnection,
-} from "typeorm";
 import express from "express";
-import { Database, Resource } from "@admin-bro/typeorm";
-import { validate } from "class-validator";
-
 import AdminBro from "admin-bro";
 import AdminBroExpress from "@admin-bro/express";
+import * as AdminBroFirebase from "@tirrilee/admin-bro-firebase";
+import firebase from "firebase";
+import { firebaseConfig } from "./firebase.creds";
 
-Resource.validate = validate;
-AdminBro.registerAdapter({ Database, Resource });
+firebase.initializeApp(firebaseConfig);
 
-@Entity()
-export class Person extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  public id!: number;
-
-  @Column()
-  public firstName!: string;
-
-  @Column()
-  public lastName!: string;
-}
+AdminBro.registerAdapter(AdminBroFirebase.FirestoreAdapter);
 
 (async () => {
-  const connection = await createConnection({
-    type: "postgres",
-    host: "localhost",
-    port: 5432,
-    username: "alecbrunelle",
-    password: "",
-    database: "postgres",
-    logging: true,
-    synchronize: true,
-    entities: [Person],
-  });
-
   const adminBro = new AdminBro({
-    databases: [connection],
-    resources: [{ resource: Person }],
+    branding: {
+      companyName: "Unity Live Platform Template Admin Panel",
+    },
+    resources: [
+      {
+        collection: firebase.firestore().collection("Templates"),
+        schema: {
+          id: "string",
+          name: "string",
+          description: "string",
+          packageName: "string",
+        },
+      },
+    ],
     rootPath: "/admin",
   });
 
@@ -52,4 +33,5 @@ export class Person extends BaseEntity {
   const router = AdminBroExpress.buildRouter(adminBro);
   app.use(adminBro.options.rootPath, router);
   app.listen(3000);
+  console.log("Admin Bro running on port 3000!");
 })();
