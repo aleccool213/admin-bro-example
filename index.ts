@@ -3,10 +3,11 @@ import express from "express";
 import AdminBro from "admin-bro";
 import AdminBroExpress from "@admin-bro/express";
 import * as AdminBroFirebase from "@tirrilee/admin-bro-firebase";
-import firebase from "firebase";
-import { firebaseConfig } from "./firebase.creds";
+import firebase from "firebase-admin";
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp({
+  credential: firebase.credential.cert("./firestore-creds.json"),
+});
 
 AdminBro.registerAdapter(AdminBroFirebase.FirestoreAdapter);
 
