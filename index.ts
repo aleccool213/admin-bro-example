@@ -1,13 +1,13 @@
 import "reflect-metadata";
 import AdminBro from "admin-bro";
+import AdminBroExpress from "@admin-bro/express";
 import * as AdminBroFirebase from "@tirrilee/admin-bro-firebase";
-import firebase from "firebase-admin";
-import fastify from "fastify";
+import Firebase from "firebase-admin";
+import Fastify from "fastify";
+import FastifyExpress from "fastify-express";
 
-import { attachRoutes } from "./fastifyAdapter";
-
-firebase.initializeApp({
-  credential: firebase.credential.cert("./firestore-creds.json"),
+Firebase.initializeApp({
+  credential: Firebase.credential.cert("./firestore-creds.json"),
 });
 
 AdminBro.registerAdapter(AdminBroFirebase.FirestoreAdapter);
@@ -19,7 +19,7 @@ AdminBro.registerAdapter(AdminBroFirebase.FirestoreAdapter);
     },
     resources: [
       {
-        collection: firebase.firestore().collection("Templates"),
+        collection: Firebase.firestore().collection("Templates"),
         schema: {
           id: "string",
           name: "string",
@@ -31,8 +31,11 @@ AdminBro.registerAdapter(AdminBroFirebase.FirestoreAdapter);
     rootPath: "/admin",
   });
 
-  const app = fastify({ logger: true });
-  attachRoutes(adminBro, app);
+  const app = Fastify({ logger: true });
+  await app.register(FastifyExpress);
+  const router = AdminBroExpress.buildRouter(adminBro);
+  app.use(adminBro.options.rootPath, router);
+
   await app.listen(3000);
-  console.log("Admin Bro running on port 3000!");
+  console.log("AdminBro is under localhost:3000/admin");
 })();
