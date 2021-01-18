@@ -17,6 +17,10 @@
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.1",
+    "fastify": "^3.10.1",
+    "fastify-express": "^0.3.2",
+    "fastify-static": "^3.4.0",
+    "firebase": "^8.2.3",
     "firebase-admin": "^9.4.2",
     "reflect-metadata": "^0.1.13"
   },
